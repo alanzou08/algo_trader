@@ -1,9 +1,9 @@
 {
     "strategy": "moving_average_crossover",
     "parameters": {
-        "fast": 18,
-        "slow": 20
+        "fast": 1,
+        "slow": 19
     },
     "ticker": "AAPL",
-    "best_return": 155.56295272827148
+    "best_return": 286.5874094390869
 }
