@@ -1,5 +1,6 @@
 from data import get_prices
 from strategy import moving_average_crossover
+from results import get_best_result, save_result
 import constants
 
 def run_backtest(ticker, start, end, cash=10000):
@@ -30,5 +31,16 @@ def run_backtest(ticker, start, end, cash=10000):
     buy_and_hold = ((prices.iloc[-1] - prices.iloc[0]) / prices.iloc[0]) * 100
     print(f"Buy and hold return: {buy_and_hold:.2f}%")
     print(f"Outperformed buy and hold: {total_return > buy_and_hold}")
+    best = get_best_result()
+    
+    if best is None or total_return > best['best_return']:
+        save_result(
+            strategy="moving_average_crossover",
+            parameters={"fast": 10, "slow": 50},
+            ticker=ticker,
+            total_return=total_return,        )
+        print("New best result saved!")
+    else:
+        print(f"Current best: {best['strategy']} with {best['parameters']} — {best['best_return']:.2f}%")
 
 run_backtest("AAPL", "2020-01-01", "2025-01-01")
