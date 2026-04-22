@@ -1,16 +1,18 @@
-import vectorbt as vbt
+import pandas as pd
 
-# Download AAPL data
-data = vbt.YFData.download('AAPL', start='2020-01-01', end='2025-01-01').get('Close')
+def moving_average_crossover(prices, fast=10, slow=50):
+    fast_ma = prices.rolling(fast).mean()
+    slow_ma = prices.rolling(slow).mean()
 
-# Calculate moving averages
-fast_ma = vbt.MA.run(data, 10, short_name='fast')
-slow_ma = vbt.MA.run(data, 50, short_name='slow')
+    signals = pd.Series(index=prices.index, dtype=str)
+    signals[:] = 'hold'
+    signals[fast_ma > slow_ma] = 'buy'
+    signals[fast_ma < slow_ma] = 'sell'
+    
+    return signals
 
-# Generate buy/sell signals
-entries = fast_ma.ma_crossed_above(slow_ma)
-exits = fast_ma.ma_crossed_below(slow_ma)
+from data import get_prices
 
-# Run backtest
-pf = vbt.Portfolio.from_signals(data, entries, exits, init_cash=10000)
-print(pf.total_return())
+prices = get_prices("AAPL", "2020-01-01", "2025-01-01")
+signals = moving_average_crossover(prices)
+print(signals)
