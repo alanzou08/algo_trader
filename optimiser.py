@@ -1,7 +1,6 @@
 from itertools import product
-from data import get_prices
 from backtester import run_backtest
-from results import get_best_result, save_result
+from results import save_result
 from constants import w1, w2, w3
 import strategy
 
@@ -106,10 +105,10 @@ def optimise_weighted(strategy_name, param_ranges, ticker, start, end, strat):
 
 if __name__ == "__main__":
     optimise_weighted(
-        strategy_name="SMA_crossover",
-        param_ranges={"fast": range(1, 51), "slow": range(1, 41)},
+        strategy_name="EMA_crossover",
+        param_ranges={"fast": range(1, 41), "slow": range(1, 41)},
         ticker="AAPL",
-        start="2015-01-01",
+        start="2020-01-01",
         end="2025-01-01",
-        strat=strategy.SMA_crossover,
+        strat=strategy.EMA_crossover,
     )

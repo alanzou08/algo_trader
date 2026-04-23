@@ -1,5 +1,9 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(python backtester.py)",
+      "Bash(python3 backtester.py)"
+    ],
     "additionalDirectories": [
       "/Users/25zouz/Documents/Projects/IBKR Algo Trading"
     ]

@@ -2,12 +2,15 @@ from data import get_prices
 from results import get_best_result, save_result
 import pandas as pd
 import numpy as np
-import strategy
-import constants
+import strategy as st
+import constants as cn
 
-def run_backtest(ticker, start, end, strat, fast=10, slow=50, cash=10000):
+def run_backtest(ticker, start, end, strat, fast=10, slow=50, cash=10000, period=14, oversold=30, overbought=70):
     prices = get_prices(ticker, start, end)
-    signals = strat(prices, fast=fast, slow=slow)
+    if strat == st.SMA_crossover or strat == st.EMA_crossover:
+        signals = strat(prices, fast=fast, slow=slow)
+    elif strat == st.RSI:
+        signals = strat(prices, period=period, oversold=oversold, overbought=overbought)
 
     shares = 0
 
@@ -16,7 +19,7 @@ def run_backtest(ticker, start, end, strat, fast=10, slow=50, cash=10000):
     for date in prices.index:
         price = prices[date]
         signal = signals[date]
-        if constants.debug_mode:
+        if cn.debug_mode:
             print(date, signal, cash, shares)
         
         if signal == 'buy' and cash >= price:
@@ -42,8 +45,12 @@ def run_backtest(ticker, start, end, strat, fast=10, slow=50, cash=10000):
 
     return total_return, buy_and_hold, prices, sharpe, max_drawdown
 
-def run_and_display(ticker, start, end, strat, fast=1, slow=2, cash=10000):
-    total_return, buy_and_hold, prices, sharpe, max_drawdown = run_backtest(ticker, start, end, strat, fast=fast, slow=slow)
+def run_and_display(ticker, start, end, strat, fast=10, slow=50, cash=10000, period=14, oversold=30, overbought=70):
+    total_return, buy_and_hold, prices, sharpe, max_drawdown = run_backtest(
+        ticker, start, end, strat,
+        fast=fast, slow=slow, cash=cash,
+        period=period, oversold=oversold, overbought=overbought,
+    )
 
     print(f"Final value: ${(10000 * (1 + total_return/100)):.2f}")
     print(f"Total return: {total_return:.2f}%")
@@ -52,7 +59,10 @@ def run_and_display(ticker, start, end, strat, fast=1, slow=2, cash=10000):
 
     best = get_best_result()
     if best is None or total_return > best['best_return']:
-        save_result("moving_average_crossover", {"fast": fast, "slow": slow}, ticker, total_return)
+        if strat == st.SMA_crossover or strat == st.EMA_crossover:
+            save_result(f"{strat}", {"fast": fast, "slow": slow}, ticker, total_return)
+        elif strat == st.RSI:
+            save_result(f"{strat}", {"period": period, "oversold": oversold, "overbought": overbought}, ticker, total_return)
         print("New best result saved!")
     else:
         print(f"Current best: {best['strategy']} with {best['parameters']} — {best['best_return']:.2f}%")
@@ -60,4 +70,4 @@ def run_and_display(ticker, start, end, strat, fast=1, slow=2, cash=10000):
     print(f"Max drawdown: {max_drawdown*100:.0f}%")
 
 if __name__ == "__main__":
-    run_and_display("AAPL", "2020-01-01", "2025-01-01", strat = strategy.SMA_crossover)
+    run_and_display("AAPL", "2020-01-01", "2025-01-01", strat=st.RSI)
