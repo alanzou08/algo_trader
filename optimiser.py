@@ -1,3 +1,4 @@
+import math
 from itertools import product
 from backtester import run_backtest
 from results import save_result
@@ -83,6 +84,7 @@ def optimise_weighted(strategy_name, param_ranges, ticker, start, end, strat):
     optimised_sharpe = None
     optimised_return = None
     optimised_drawdown = None
+    optimised_benchmark = None
     best_params = None
     best_score = None
     
@@ -91,35 +93,46 @@ def optimise_weighted(strategy_name, param_ranges, ticker, start, end, strat):
         if _invalid_params(params):
             continue
 
-        total_return, _, _, sharpe, max_drawdown = run_backtest(
+        total_return, _, _, sharpe, max_drawdown, benchmark_return = run_backtest(
             ticker, start, end, strat, **params
         )
         
-        score = (w1 * sharpe) + (w2 * total_return) + (w3 * max_drawdown)  
+        score = (w1 * sharpe) + (w2 * total_return/benchmark_return) + (w3 * max_drawdown)
+
+        if math.isnan(score):
+            continue
 
         print(f"Params: {params} — Score: {score:.0f}")
 
         if best_score is None or score > best_score:
             best_params = params
-            optimised_sharpe = sharpe 
+            optimised_sharpe = sharpe
             best_score = score
             optimised_drawdown = max_drawdown
             optimised_return = total_return
+            optimised_benchmark = benchmark_return
 
-    print(f"\nBest: {best_params}: {best_score:.2f} = {w1} x {optimised_sharpe:.2f} + {w2} x {optimised_return:.0f}% + {w3} x {optimised_drawdown:.2f}%")
-    save_result(strategy_name, best_params, ticker, optimised_sharpe, score, optimised_return, optimised_drawdown)
-    return optimised_sharpe, best_params, score, optimised_return, optimised_drawdown
+    print(f"\nBest: {best_params}: {best_score:.2f} = {w1} x {optimised_sharpe:.2f} + {w2} x {optimised_return/optimised_benchmark:.2f} + {w3} x {optimised_drawdown:.2f}")
+    save_result(
+        strategy_name,
+        best_params,
+        ticker,
+        total_return=optimised_return,
+        sharpe=optimised_sharpe,
+        max_drawdown=optimised_drawdown,
+        score=best_score,
+    )
+    return optimised_sharpe, best_params, best_score, optimised_return, optimised_drawdown
 
 if __name__ == "__main__":
     optimise_weighted(
-        strategy_name="RSI",
+        strategy_name="EMA",
         param_ranges={
-            "period": range(5, 30),
-            "oversold": range(10, 45, 5),
-            "overbought": range(55, 90, 5),
+            "fast": range(1, 31),
+            "slow": range(5,35)
         },
         ticker="AAPL",
-        start="2020-01-01",
+        start="2000-01-01",
         end="2025-01-01",
         strat=strategy.RSI,
     )

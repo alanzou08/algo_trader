@@ -1,13 +1,12 @@
 {
-    "strategy": "<function RSI at 0x10a814720>",
+    "strategy": "EMA",
     "parameters": {
-        "period": 27,
-        "oversold": 35,
-        "overbought": 85
+        "fast": 1,
+        "slow": 5
     },
     "ticker": "AAPL",
-    "best_return": 358.51637451171877,
-    "sharpe": null,
-    "max_drawdown": null,
-    "score": null
+    "best_return": -99.99477731391787,
+    "sharpe": -0.12364180524831189,
+    "max_drawdown": -0.9999797042592037,
+    "score": -0.3624903830888075
 }

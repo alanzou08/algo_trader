@@ -43,10 +43,10 @@ def run_backtest(ticker, start, end, strat, fast=10, slow=50, cash=10000, period
     total_return = ((final_value - 10000) / 10000) * 100
     buy_and_hold = ((prices.iloc[-1] - prices.iloc[0]) / prices.iloc[0]) * 100
 
-    return total_return, buy_and_hold, prices, sharpe, max_drawdown
+    return total_return, buy_and_hold, prices, sharpe, max_drawdown, buy_and_hold
 
 def run_and_display(ticker, start, end, strat, fast=10, slow=50, cash=10000, period=14, oversold=30, overbought=70):
-    total_return, buy_and_hold, prices, sharpe, max_drawdown = run_backtest(
+    total_return, buy_and_hold, prices, sharpe, max_drawdown, _ = run_backtest(
         ticker, start, end, strat,
         fast=fast, slow=slow, cash=cash,
         period=period, oversold=oversold, overbought=overbought,
@@ -70,4 +70,4 @@ def run_and_display(ticker, start, end, strat, fast=10, slow=50, cash=10000, per
     print(f"Max drawdown: {max_drawdown*100:.0f}%")
 
 if __name__ == "__main__":
-    run_and_display("AAPL", "2020-01-01", "2025-01-01", strat=st.RSI, period=27, oversold=35, overbought=85)
+    run_and_display("AAPL", "2010-01-01", "2025-01-01", strat=st.EMA_crossover, fast=10, slow=20)
