@@ -1,9 +1,12 @@
 {
-    "strategy": "moving_average_crossover",
+    "strategy": "SMA_crossover",
     "parameters": {
-        "fast": 1,
-        "slow": 2
+        "fast": 5,
+        "slow": 14
     },
     "ticker": "AAPL",
-    "best_return": 4.026914367675781
+    "best_return": 1.5188170498224647,
+    "sharpe": -24.914407260666422,
+    "max_drawdown": 1356.4420233154297,
+    "score": -0.17710155657678278
 }
