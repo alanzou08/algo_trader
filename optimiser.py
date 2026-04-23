@@ -69,17 +69,6 @@ def out_of_sample_test(strategy_name, param_ranges, ticker, train_start, train_e
     print(f"Buy and hold return: {buy_and_hold:.2f}%")
     print(f"Outperformed buy and hold: {total_return > buy_and_hold}")
 
-# out_of_sample_test(
-#     strategy_name="SMA_crossover",
-#     param_ranges={"fast": range(1, 51), "slow": range(1, 51)},
-#     ticker="AAPL",
-#     train_start="2020-01-01",
-#     train_end="2022-12-31",
-#     test_start="2023-01-01",
-#     test_end="2025-01-01",
-#     strat=strategy.SMA_crossover,
-# )
-
 optimise_sharpe(
     strategy_name="SMA_crossover",
     param_ranges={"fast": range(1, 51), "slow": range(1, 51)},
