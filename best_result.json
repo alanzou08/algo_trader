@@ -1,11 +1,12 @@
 {
-    "strategy": "moving_average_crossover",
+    "strategy": "<function RSI at 0x10a814720>",
     "parameters": {
-        "fast": 4,
-        "slow": 7
+        "period": 27,
+        "oversold": 35,
+        "overbought": 85
     },
     "ticker": "AAPL",
-    "best_return": 2499.7980726909636,
+    "best_return": 358.51637451171877,
     "sharpe": null,
     "max_drawdown": null,
     "score": null

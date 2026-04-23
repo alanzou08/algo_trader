@@ -4,16 +4,23 @@ from results import save_result
 from constants import w1, w2, w3
 import strategy
 
+def _invalid_params(params):
+    if 'fast' in params and 'slow' in params and params['fast'] >= params['slow']:
+        return True
+    if 'oversold' in params and 'overbought' in params and params['oversold'] >= params['overbought']:
+        return True
+    return False
+
 def optimise(strategy_name, param_ranges, ticker, start, end, strat):
     keys = list(param_ranges.keys())
     values = list(param_ranges.values())
-    
+
     best_return = None
     best_params = None
-    
+
     for combo in product(*values):
         params = dict(zip(keys, combo))
-        if params.get('fast') >= params.get('slow'):
+        if _invalid_params(params):
             continue
 
         total_return, _ = run_backtest(
@@ -39,7 +46,7 @@ def optimise_sharpe(strategy_name, param_ranges, ticker, start, end, strat):
     
     for combo in product(*values):
         params = dict(zip(keys, combo))
-        if params.get('fast') >= params.get('slow'):
+        if _invalid_params(params):
             continue
 
         _, _, _, sharpe, _ = run_backtest(
@@ -81,7 +88,7 @@ def optimise_weighted(strategy_name, param_ranges, ticker, start, end, strat):
     
     for combo in product(*values):
         params = dict(zip(keys, combo))
-        if params.get('fast') >= params.get('slow'):
+        if _invalid_params(params):
             continue
 
         total_return, _, _, sharpe, max_drawdown = run_backtest(
@@ -105,10 +112,14 @@ def optimise_weighted(strategy_name, param_ranges, ticker, start, end, strat):
 
 if __name__ == "__main__":
     optimise_weighted(
-        strategy_name="EMA_crossover",
-        param_ranges={"fast": range(1, 41), "slow": range(1, 41)},
+        strategy_name="RSI",
+        param_ranges={
+            "period": range(5, 30),
+            "oversold": range(10, 45, 5),
+            "overbought": range(55, 90, 5),
+        },
         ticker="AAPL",
         start="2020-01-01",
         end="2025-01-01",
-        strat=strategy.EMA_crossover,
+        strat=strategy.RSI,
     )

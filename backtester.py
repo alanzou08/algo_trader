@@ -70,4 +70,4 @@ def run_and_display(ticker, start, end, strat, fast=10, slow=50, cash=10000, per
     print(f"Max drawdown: {max_drawdown*100:.0f}%")
 
 if __name__ == "__main__":
-    run_and_display("AAPL", "2020-01-01", "2025-01-01", strat=st.RSI)
+    run_and_display("AAPL", "2020-01-01", "2025-01-01", strat=st.RSI, period=27, oversold=35, overbought=85)
