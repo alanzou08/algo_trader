@@ -38,7 +38,7 @@ def run_backtest(ticker, start, end, strat, fast=10, slow=50, cash=10000):
 
     return total_return, buy_and_hold, prices, sharpe
 
-def run_and_display(ticker, start, end, strat, fast=10, slow=50, cash=10000):
+def run_and_display(ticker, start, end, strat, fast=1, slow=2, cash=10000):
     total_return, buy_and_hold, prices, sharpe = run_backtest(ticker, start, end, strat, fast=fast, slow=slow)
 
     print(f"Final value: ${(10000 * (1 + total_return/100)):.2f}")

@@ -1,9 +1,9 @@
 {
-    "strategy": "moving_average_crossover",
+    "strategy": "SMA_crossover",
     "parameters": {
-        "fast": 1,
-        "slow": 19
+        "fast": 8,
+        "slow": 13
     },
-    "ticker": "AAPL",
-    "best_return": 286.5874094390869
+    "ticker": "NVDA",
+    "best_return": 1.6416448740324767
 }
